@@ -1,3 +1,5 @@
+"use client";
+
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { drizzle } from "drizzle-orm/d1";
 import { users } from "@/schemas/drizzle";
