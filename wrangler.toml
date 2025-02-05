@@ -6,7 +6,6 @@ pages_build_output_dir = ".next"
 
 [[d1_databases]]
 binding="DB"
-database_name="next-cloudflare-prod-db"
-database_id="cf12cc74-3b4b-401f-8a12-f2369c4d622a"
-preview_database_id="DB"
+database_name="rhode-island"
+database_id="9593f8cc-b783-4bb5-ac70-b0721059e459"
 migrations_dir="./lib/db/migrations"
