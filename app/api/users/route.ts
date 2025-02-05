@@ -22,6 +22,8 @@ export const POST = async (req: Request) => {
   const id = await db.insert(users).values({
     organization_id: 1,
     name: `${name} ${Math.random()}`,
+    email: `${name.replace(' ', '_')}@example.com`,
+    password: 'password',
     created_at: new Date(),
     updated_at: new Date(),
   }).execute();
