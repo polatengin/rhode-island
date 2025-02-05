@@ -3,6 +3,8 @@ import { db } from "@/schemas/db";
 import { users } from "@/schemas/drizzle";
 import { hashPassword } from "@/lib/auth/password";
 
+export const runtime = 'edge';
+
 interface SignupRequest {
   name: string;
   email: string;
