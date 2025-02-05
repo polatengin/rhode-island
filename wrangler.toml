@@ -1,6 +1,5 @@
 # Top-level configuration
 name = "rhode-island"
-main = "src/index.js"
 compatibility_date = "2022-07-12"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".next"
