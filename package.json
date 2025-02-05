@@ -16,10 +16,12 @@
     "drizzle:dev": "drizzle-kit studio"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.7.4",
     "@tailwindcss/postcss": "4.0.3",
     "drizzle-kit": "0.30.4",
     "drizzle-orm": "0.39.1",
     "next": "15.1.6",
+    "next-auth": "^4.24.11",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },

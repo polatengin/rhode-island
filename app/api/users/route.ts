@@ -1,10 +1,21 @@
 import { users } from '@/schemas/drizzle';
 import { getRequestContext } from '@cloudflare/next-on-pages'
 import { drizzle } from 'drizzle-orm/d1';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 export const runtime = 'edge'
 
-export async function GET() {
+async function authenticate(req: Request) {
+  const session = await getServerSession(authOptions);
+
+  return !!session;
+}
+
+export async function GET(req: Request) {
+  if (!await authenticate(req)) {
+    return new Response("Unauthorized", { status: 401 });
+  }
   const { env } = getRequestContext();
   const db = drizzle(env.db);
 
@@ -14,6 +25,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  if (!await authenticate(req)) {
+    return new Response("Unauthorized", { status: 401 });
+  }
   const { env } = getRequestContext();
   const db = drizzle(env.db);
 
