@@ -5,4 +5,9 @@ import Twitter from "next-auth/providers/twitter"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [GitHub, Google, Twitter],
+  callbacks: {
+    authorized: async ({ auth }) => {
+      return !!auth
+    },
+  },
 });
