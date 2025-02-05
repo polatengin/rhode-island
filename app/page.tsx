@@ -1,27 +1,21 @@
 "use client";
 
-import { getRequestContext } from "@cloudflare/next-on-pages";
-import { drizzle } from "drizzle-orm/d1";
-import { users } from "@/schemas/drizzle";
-import UserList from "./UserList";
+import { useEffect, useState } from "react";
 
 export const runtime = "edge";
 
-export default async function Home() {
+export default function Home() {
 
-  const { env } = getRequestContext();
-  const db = drizzle(env.db);
+  const [users, setUsers] = useState<{ id: number, name: string }[]>([]);
 
-  const userList = await db.select().from(users).all();
-
-  const saveUser = async () => {
-    await db.insert(users).values({
-      organization_id: 1,
-      name: `John Doe ${Math.floor(Math.random() * 1000)}`,
-      created_at: new Date(),
-      updated_at: new Date(),
-    }).execute();
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const json = await fetch("/api/users");
+      const data: [] = await json.json();
+      setUsers(data);
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -34,10 +28,27 @@ export default async function Home() {
             </code>.
           </li>
           <li>Save and see your changes instantly.</li>
-          <button onClick={saveUser}>Save</button>
+          <button onClick={() => {
+            fetch("/api/users", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ name: "New User" }),
+            });
+          }}>Save</button>
         </ol>
 
-        <UserList users={userList} />
+        <div>
+          <h1>Users</h1>
+          <ul>
+            {users.map((user) => (
+              <li key={user.id}>
+                {user.name}
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
