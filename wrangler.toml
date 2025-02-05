@@ -10,6 +10,6 @@ pages_build_output_dir = ".vercel/output/static"
 enabled = true
 
 [[d1_databases]]
-binding = "DB"
+binding = "db"
 database_name = "rhode-island-db"
 database_id = "dd17504c-861a-4feb-8392-7bb34f16b56f"
