@@ -5,7 +5,7 @@ import { drizzle } from 'drizzle-orm/d1';
 
 export const runtime = 'edge'
 
-export const GET = auth(async function GET(req: Request) {
+export const GET = auth(async function GET() {
   const { env } = getRequestContext();
   const db = drizzle(env.db);
 
