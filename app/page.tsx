@@ -3,7 +3,7 @@
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { drizzle } from "drizzle-orm/d1";
 import { users } from "@/schemas/drizzle";
-import { useState } from "react";
+import UserList from "./UserList";
 
 export const runtime = "edge";
 
@@ -12,18 +12,7 @@ export default async function Home() {
   const { env } = getRequestContext();
   const db = drizzle(env.db);
 
-  const [userList, setUserList] = useState<{
-    id: number;
-    organization_id: number;
-    name: string;
-    created_at: Date | null;
-    updated_at: Date | null;
-}[]>([]);
-
-  const getUserList = async () => {
-    const x = await db.select().from(users).all();
-    setUserList(x);
-  };
+  const userList = await db.select().from(users).all();
 
   const saveUser = async () => {
     await db.insert(users).values({
@@ -32,7 +21,6 @@ export default async function Home() {
       created_at: new Date(),
       updated_at: new Date(),
     }).execute();
-    getUserList();
   };
 
   return (
@@ -47,19 +35,9 @@ export default async function Home() {
           </li>
           <li>Save and see your changes instantly.</li>
           <button onClick={saveUser}>Save</button>
-          <button onClick={getUserList}>Get</button>
         </ol>
 
-        <div>
-          <h1>Users</h1>
-          <ul>
-            {userList.map((user) => (
-              <li key={user.id}>
-                {user.name}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <UserList users={userList} />
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
