@@ -1,0 +1,12 @@
+# Top-level configuration
+name = "rhode-island"
+main = "src/index.js"
+compatibility_date = "2022-07-12"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding="DB"
+database_name="next-cloudflare-prod-db"
+database_id="cf12cc74-3b4b-401f-8a12-f2369c4d622a"
+preview_database_id="DB"
+migrations_dir="./lib/db/migrations"
