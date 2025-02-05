@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import { eq } from "drizzle-orm";
-import { compare } from "bcrypt";
 import { users } from "./schemas/drizzle";
 import { db } from "./schemas/db";
+import { verifyPassword } from "./lib/auth/password";
 
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
@@ -30,7 +30,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new Error('No user found with this email.')
         }
 
-        const isPasswordValid = await compare(credentials.password as string, user.password);
+        const isPasswordValid = await verifyPassword(credentials.password as string, user.password);
 
         if (!isPasswordValid) {
           throw new Error('Invalid password.')
@@ -48,34 +48,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google,
     Twitter
   ],
-  session: {
-    strategy: 'jwt', // Using JWT for session management
-  },
   pages: {
-    signIn: '/auth/signin', // Customize your sign-in page if necessary
+    signIn: '/login',
   },
   callbacks: {
-    authorized: async ({ auth }) => {
-      return !!auth
-    },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id ?? ""
-        token.email = user.email ?? ""
-        token.name = user.name ?? ""
-        token.organizationId = user.organizationId
+        token.id = user.id ?? "";
+        token.email = user.email ?? "";
+        token.name = user.name ?? "";
+        token.organizationId = user.organizationId;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id ?? ""
-        session.user.email = token.email ?? ""
-        session.user.name = token.name
-        session.user.organizationId = token.organizationId
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.organizationId = token.organizationId as string;
       }
-      return session
+      return session;
     },
   },
   secret: process.env.JWT_SECRET || 'your_secret_key',
+  session: {
+    strategy: 'jwt', // Using JWT for session management
+  },
 });

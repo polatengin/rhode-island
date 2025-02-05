@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
-import { hash } from "bcrypt";
 import { db } from "@/schemas/db";
 import { users } from "@/schemas/drizzle";
+import { hashPassword } from "@/lib/auth/password";
+
+interface SignupRequest {
+  name: string;
+  email: string;
+  password: string;
+}
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password } = await request.json();
+    const { name, email, password } = (await request.json()) as SignupRequest;
 
     // Validate input
     if (!name || !email || !password) {
@@ -27,18 +33,18 @@ export async function POST(request: Request) {
       );
     }
 
-    // Hash password
-    const hashedPassword = await hash(password, 10);
+    // Hash password using our custom implementation
+    const hashedPassword = await hashPassword(password);
 
     // Create user
     const [newUser] = await db.insert(users).values({
       name,
       email,
       password: hashedPassword,
-      organization_id: "1", // You might want to adjust this based on your needs
+      organization_id: 1, // Default organization ID
     }).returning();
 
-    // Return success but don't include the password
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userWithoutPassword } = newUser;
     return NextResponse.json(userWithoutPassword, { status: 201 });
   } catch (error) {

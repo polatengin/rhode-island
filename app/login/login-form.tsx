@@ -18,25 +18,21 @@ export function LoginForm() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
 
-      if (result?.error) {
-        setError(result.error);
-        return;
-      }
-
-      router.push("/"); // Redirect to home page after successful login
-      router.refresh(); // Refresh the page to update the session
-    } catch (error) {
-      setError("An unexpected error occurred");
-    } finally {
+    if (result?.error) {
+      setError(result.error);
       setLoading(false);
+      return;
     }
+
+    router.push("/"); // Redirect to home page after successful login
+    router.refresh(); // Refresh the page to update the session
+    setLoading(false);
   }
 
   return (
@@ -80,7 +76,7 @@ export function LoginForm() {
         {loading ? "Signing in..." : "Sign in"}
       </button>
       <p className="text-center text-sm text-gray-500">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <a href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
           Sign up
         </a>

@@ -34,8 +34,7 @@ export function SignUpForm() {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to create account");
+        throw new Error("Failed to create account");
       }
 
       // Sign in the user after successful registration
